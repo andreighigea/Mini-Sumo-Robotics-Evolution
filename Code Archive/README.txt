@@ -1,1 +1,1 @@
-NOTICE - This folder serves as a archive and proof of progress and code, but does not feature finished product code, as development went on, code was commented, deleted and altered for testing purposes!
+NOTICE - This folder serves as an archive and proof of progress and code, but does not feature finished product code, as development went on, code was commented, deleted and altered for testing purposes!
