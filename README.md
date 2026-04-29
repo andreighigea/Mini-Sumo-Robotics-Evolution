@@ -40,7 +40,9 @@ My latest iteration is a high-performance robot optimized for speed, low profile
 ## Media
 - [First Robot 2022](media/first_robot.jpeg)
 <img src="media/first_robot.jpeg" width="200">
+
 - [Final Robot 2025](media/final_robot.jpeg)
-![](media/final_robot.jpeg)
+<img src="media/final_robot.jpeg" width="200">
+
 - [PCB Ground Patching Detail](media/pcb_design.jpeg)
-![](media/pcb_design.jpeg)
+<img src="media/pcb_design.jpeg" width="200">
