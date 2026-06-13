@@ -21,7 +21,7 @@ My latest iteration is a high-performance robot optimized for speed, low profile
 
 ### 2. Power Integrity & Brownout Prevention
 * **Problem:** Motor inrush current caused voltage drops that triggered MCU resets.
-* **Solution:** Total isolation of the logic rail from the power rail. Switched from large decoupling capacitors to a dual-battery system, ensuring a stable 3.3V/5V environment.
+* **Solution:** Switched from large decoupling capacitors to a dual-battery system, ensuring a stable 3.3V/5V environment.
 
 ### 3. Diagnostics & Fail-Safes (POST)
 * **Implementation:** Developed a **Power-On Self-Test (POST)** routine. If sensors fail to initialize, the robot enters an error state (rotation + red LED blinking) for rapid field diagnosis.
