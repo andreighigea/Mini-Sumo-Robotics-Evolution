@@ -1,41 +1,40 @@
 # Autonomous Mini-Sumo Evolution (2019-2025)
 
-This repository documents my 5-year journey in autonomous robotics, moving from basic hobbyist circuits to a professional-grade ESP32-S3 system. 
+This repository documents the iterative hardware and firmware development of a constraint-driven autonomous mini-sumo robot. 
 
-## 2025 Version: The "Powerhouse"
-My latest iteration is a high-performance robot optimized for speed, low profile (1.4cm), and electromagnetic resilience.
+## 2025 Iteration: 1.4cm Z-Height Chassis
 
-### **Key Technical Specs:**
-* **MCU:** ESP32-S3 (Dual-Core) utilizing **FreeRTOS (xTasks)** to decouple sensor polling from motor control.
-* **Sensing:** 8x8 Matrix Time-of-Flight (ToF) sensors with **Bitwise Masking** for zero-latency detection.
-* **Power:** 6S LiPo rail with **Logic Isolation** (dedicated 3.7V cell for MCU/Sensors) to prevent brownouts.
-* **Hardware:** Custom 2-layer PCB featuring **Ground Patching** and Faraday-shielding to mitigate high-frequency EMI.
+Designed under strict personal budget limits and a maximum 1.4cm wedge profile requirement, necessitating non-standard layout and power delivery decisions to maintain operational stability.
 
----
-
-## Major Engineering Challenges & Solutions
-
-### 1. EMI Mitigation (Electromagnetic Interference)
-* **Problem:** High-power motors induced massive noise on I2C lines, causing sensor "blindness".
-* **Solution:** Implemented ground planes on both PCB layers and used grounded copper tape shields around motor mounts. This significantly improved signal integrity even at 22.2V power levels.
-
-### 2. Power Integrity & Brownout Prevention
-* **Problem:** Motor inrush current caused voltage drops that triggered MCU resets.
-* **Solution:** Switched from large decoupling capacitors to a dual-battery system, ensuring a stable 3.3V/5V environment.
-
-### 3. Diagnostics & Fail-Safes (POST)
-* **Implementation:** Developed a **Power-On Self-Test (POST)** routine. If sensors fail to initialize, the robot enters an error state (rotation + red LED blinking) for rapid field diagnosis.
+### Hardware & Firmware Specifications
+* **MCU:** ESP32-S3 (Dual-Core).
+* **RTOS:** FreeRTOS (xTasks) separating sensor polling routines from motor control execution loops to minimize timing jitter.
+* **Sensing:** 8x8 Matrix ToF sensors utilizing bitwise masking to avoid nested `if` comparisons and simplify the detection logic.
+* **Power Delivery Network (PDN):** Split-rail architecture. 6S (22.2V) LiPo rail for motors; dedicated 1S (3.7V) cell for MCU/Sensors. Implemented to bypass the need for high-capacitance bulk decoupling that exceeded the 1.4cm Z-height restriction, successfully preventing MCU brownouts during high-current motor startup events.
+* **PCB & EMI:** Custom 2-layer PCB. Due to budget constraints precluding a 4-layer stackup with an internal ground plane, ground patching was utilized. Grounded copper tape shields the motor mounts to attenuate high-frequency switching noise radiating onto adjacent I2C lines.
 
 ---
 
-## Evolution Timeline
+## Engineering Constraints & Resolutions
 
-* **2019-2022:** Introduction to robotics. Learned GPIO, motor drivers, and basic asynchronous logic using `millis()`.
-* **2023:** Transitioned to **RP2040** and DIY PCB etching. Focused on torque optimization and CNC-milled chassis.
-* **2024:** Migrated to **ESP32-C3** and ToF sensors. Solved address conflicts using I2C Multiplexers.
-* **2025:** Reached the current state of the art with **SMD reflow soldering**, adjustable scraper blades, and multi-core task optimization.
+### 1. EMI Mitigation Under Budget Limits
+* **Fault:** 22.2V PWM switching across high-power motors induced significant parasitic coupling on I2C traces, resulting in bus lockups and lost packets (NACKs).
+* **Resolution:** Restricted to a 2-layer layout, continuous unbroken return paths were impossible. Added ground patches under critical traces and physical grounded copper tape enclosures around the noise source to protect signal integrity.
+
+### 2. PDN Brownout Management
+* **Fault:** High current draw during motor stall/startup caused aggressive voltage drops on the shared power rail, pulling the voltage below the MCU reset threshold.
+* **Resolution:** Volumetric limits (1.4cm) prohibited large electrolytic bulk capacitors. Separated the logic load onto an isolated 1S battery, ensuring a stable regulator output irrespective of the motor rail's transient state.
+
+### 3. Execution Health (POST)
+* **Implementation:** Firmware initializes with a Power-On Self-Test (POST). Verifies I2C device presence and rail stability. Fails to a safe error loop (rotation + visual flag) if a hardware fault is detected, avoiding unpredictable behavior in the ring.
 
 ---
+
+## Iteration History
+* **2019-2022:** Base asynchronous logic (`millis()`), GPIO interfacing, bare-metal motor control.
+* **2023:** RP2040 integration, custom 2-layer DIY etching, CNC chassis machining.
+* **2024:** ESP32-C3 migration, I2C bus multiplexing to resolve hardware address collisions.
+* **2025:** SMD reflow implementation, multi-core RTOS task scheduling, aggressive Z-height optimization.
 
 ## Media
 - [First Robot 2022](media/first_robot.jpeg)
